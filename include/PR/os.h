@@ -467,7 +467,7 @@ typedef struct {
  */
 #define OS_APP_NMI_BUFSIZE 64
 
-#if defined(_LANGUAGE_C) || defined(_LANGUAGE_C_PLUS_PLUS)
+#if 1
 
 /**************************************************************************
  *

@@ -9,6 +9,7 @@ https://github.com/buu342/N64-UNFLoader
 #include "usb.h"
 #ifndef LIBDRAGON
     #include <ultra64.h>
+    #include <PR/os.h>
 #else
     #include <libdragon.h>
 #endif
@@ -36,15 +37,15 @@ https://github.com/buu342/N64-UNFLoader
 /*********************************
    Libultra macros for libdragon
 *********************************/
-
+#ifndef ALIGN
+    #define ALIGN(VAL_, ALIGNMENT_) (((VAL_) + ((ALIGNMENT_) - 1)) & ~((ALIGNMENT_) - 1))
+#endif
 #ifdef LIBDRAGON
     // Useful
     #ifndef MIN
         #define MIN(a, b) ((a) < (b) ? (a) : (b))
     #endif
-    #ifndef ALIGN
-        #define ALIGN(value, align) (((value) + ((typeof(value))(align) - 1)) & ~((typeof(value))(align) - 1))
-    #endif
+
     #ifndef TRUE
         #define TRUE 1
     #endif
