@@ -26,6 +26,7 @@ typedef union {
         f32 f_odd;
         f32 f_even;
     } f;
+    f64 d;
 } __OSfp;
 
 typedef struct {
