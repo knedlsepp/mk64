@@ -254,6 +254,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
     if (!gEnableDebugMode && (btnAndStick & START_BUTTON)) {
         btnAndStick |= A_BUTTON;
     }
+    debug_printf("FOO!");
 
     if (!is_screen_being_faded()) {
         sp38 = find_menu_items_dupe(0xF0);
@@ -1032,6 +1033,8 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
 
     isDebug = true;
     btnAndStick = controller->buttonPressed | controller->stickPressed;
+    debug_initialize();
+    debug_printf("FOO!");
 
     if (is_screen_being_faded() == 0) {
         if (controllerIdx == PLAYER_ONE) {
@@ -1272,6 +1275,7 @@ void setup_selected_game_mode(void) {
  * Navigation of the main game mode select screen
  */
 void main_menu_act(struct Controller* controller, u16 controllerIdx) {
+
     u16 btnAndStick;
     s32 subMode; // subMode
     bool cursorMoved; // cursorMoved
@@ -1282,6 +1286,9 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
     }
 
     if (is_screen_being_faded() == 0) {
+        debug_initialize();
+        debug_printf("FOO!");
+
         switch (gMainMenuSelection) {
             case MAIN_MENU_NONE:
                 break;
