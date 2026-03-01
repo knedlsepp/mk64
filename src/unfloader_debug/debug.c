@@ -191,7 +191,7 @@ https://github.com/buu342/N64-UNFLoader
             static void* debug_osSyncPrintf_implementation(void *unused, const char *str, size_t len);
         #endif
     #endif
-    static inline void debug_handle_64drivebutton();
+    void debug_handle_64drivebutton();
     
     
     /*********************************
@@ -754,7 +754,7 @@ https://github.com/buu342/N64-UNFLoader
         Handles the 64Drive's button logic
     ==============================*/
     
-    static inline void debug_handle_64drivebutton()
+    void debug_handle_64drivebutton()
     {
         static u32 held = 0;
     
