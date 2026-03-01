@@ -1173,7 +1173,11 @@ https://github.com/buu342/N64-UNFLoader
                 {
                     if ((value & desc->mask) == desc->value) 
                     {
-                        (first) ? (first = 0) : ((void)debug_printf(","));
+                        if (first) {
+                            first = 0;
+                        } else {
+                            debug_printf(",");
+                        }
                         debug_printf("%s", desc->string);
                     }
                     desc++;
