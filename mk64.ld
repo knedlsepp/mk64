@@ -84,6 +84,7 @@ SECTIONS
       BUILD_DIR/src/audio/external.o(.text*);
       BUILD_DIR/src/audio/port_eu.o(.text*);
       BUILD_DIR/src/unfloader_debug/usb.o(.text*);
+      BUILD_DIR/src/unfloader_debug/debug.o(.text*);
       #if DEBUG
          BUILD_DIR/src/os/osCartRomInit.o(.text*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.text*);
@@ -252,6 +253,7 @@ SECTIONS
       BUILD_DIR/src/audio/external.o(.data*);
       BUILD_DIR/src/audio/port_eu.o(.data*);
       BUILD_DIR/src/unfloader_debug/usb.o(.data*);
+      BUILD_DIR/src/unfloader_debug/debug.o(.data*);
       BUILD_DIR/src/audio/audio_session_presets.o(.data*);
       BUILD_DIR/src/os/osInitialize.o(.data*);
       BUILD_DIR/src/os/osCreateViManager.o(.data*);
@@ -298,6 +300,7 @@ SECTIONS
       BUILD_DIR/src/audio/external.o(.rodata*);
       BUILD_DIR/src/audio/port_eu.o(.rodata*);
       BUILD_DIR/src/unfloader_debug/usb.o(.rodata*);
+      BUILD_DIR/src/unfloader_debug/debug.o(.rodata*);
 
       #if DEBUG
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.rodata*);
@@ -353,6 +356,7 @@ SECTIONS
       BUILD_DIR/src/audio/external.o(.bss*);
       BUILD_DIR/src/audio/port_eu.o(.bss*);
       BUILD_DIR/src/unfloader_debug/usb.o(.bss*);
+      BUILD_DIR/src/unfloader_debug/debug.o(.bss*);
       BUILD_DIR/src/os/osInitialize.o(.bss*);
       BUILD_DIR/src/os/osCreateViManager.o(.bss*);
       BUILD_DIR/src/os/osCreatePiManager.o(.bss*);

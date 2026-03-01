@@ -9,6 +9,7 @@ https://github.com/buu342/N64-UNFLoader
 #include "debug.h"
 #ifndef LIBDRAGON
     #include <ultra64.h>
+    #include <PR/os.h>
     #include <PR/os_internal.h> // Needed for Crash's Linux toolchain
     #include <PR/R4300.h>
 #else
@@ -209,6 +210,9 @@ https://github.com/buu342/N64-UNFLoader
     // Debug globals
     static char  debug_initialized = 0;
     static char  debug_buffer[BUFFER_SIZE];
+    #if OVERWRITE_OSPRINT
+        void* __printfunc = NULL;
+    #endif
     
     // Commands hashtable related
     static debugCommand* debug_commands_hashtable[HASHTABLE_SIZE];
