@@ -565,7 +565,7 @@ extern s32 osVersion;
 extern u32 osMemSize; /* Memory Size */
 extern s32 osAppNMIBuffer[];
 
-extern OSIntMask __OSGlobalIntMask; /* global interrupt mask */
+extern volatile u32 __OSGlobalIntMask; /* global interrupt mask */
 extern OSPiHandle* __osPiTable;     /* The head of OSPiHandle link list */
 extern OSPiHandle* __osDiskHandle;  /* For exceptasm to get disk info*/
 

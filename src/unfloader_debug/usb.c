@@ -10,10 +10,14 @@ https://github.com/buu342/N64-UNFLoader
 #ifndef LIBDRAGON
     #include <ultra64.h>
     #include <PR/os.h>
+    #include <PR/R4300.h>
+    #include <os/new_func.h>
 #else
     #include <libdragon.h>
 #endif
 #include <string.h>
+
+#define IO_WRITE(addr, data) (*(vu32*) PHYS_TO_K1(addr) = (u32) (data))
 
 
 /*********************************
@@ -40,35 +44,33 @@ https://github.com/buu342/N64-UNFLoader
 #ifndef ALIGN
     #define ALIGN(VAL_, ALIGNMENT_) (((VAL_) + ((ALIGNMENT_) - 1)) & ~((ALIGNMENT_) - 1))
 #endif
-#ifdef LIBDRAGON
-    // Useful
-    #ifndef MIN
-        #define MIN(a, b) ((a) < (b) ? (a) : (b))
-    #endif
-
-    #ifndef TRUE
-        #define TRUE 1
-    #endif
-    #ifndef FALSE
-        #define FALSE 0
-    #endif
-    #ifndef NULL
-        #define NULL 0
-    #endif
-    
-    // MIPS addresses
-    #define KSEG0 0x80000000
-    #define KSEG1 0xA0000000
-    
-    // Memory translation stuff
-    #define PHYS_TO_K1(x)       ((u32)(x)|KSEG1)
-    #define IO_WRITE(addr,data) (*(vu32 *)PHYS_TO_K1(addr)=(u32)(data))
-    #define IO_READ(addr)       (*(vu32 *)PHYS_TO_K1(addr))
-    
-    // Data alignment
-    #define OS_DCACHE_ROUNDUP_ADDR(x) (void *)(((((u32)(x)+0xf)/0x10)*0x10))
-    #define OS_DCACHE_ROUNDUP_SIZE(x) (u32)(((((u32)(x)+0xf)/0x10)*0x10))
+// Useful
+#ifndef MIN
+    #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
+
+#ifndef TRUE
+    #define TRUE 1
+#endif
+#ifndef FALSE
+    #define FALSE 0
+#endif
+#ifndef NULL
+    #define NULL 0
+#endif
+
+// MIPS addresses
+#define KSEG0 0x80000000
+#define KSEG1 0xA0000000
+
+// Memory translation stuff
+#define PHYS_TO_K1(x)       ((u32)(x)|KSEG1)
+#define IO_WRITE(addr,data) (*(vu32 *)PHYS_TO_K1(addr)=(u32)(data))
+#define IO_READ(addr)       (*(vu32 *)PHYS_TO_K1(addr))
+
+// Data alignment
+#define OS_DCACHE_ROUNDUP_ADDR(x) (void *)(((((u32)(x)+0xf)/0x10)*0x10))
+#define OS_DCACHE_ROUNDUP_SIZE(x) (u32)(((((u32)(x)+0xf)/0x10)*0x10))
 
 
 /*********************************
@@ -308,6 +310,43 @@ u32 usb_io_read(u32 pi_address)
     #endif
 }
 
+s32 __osPiRawWriteIo(u32 devAddr, u32 data) {
+    register u32 stat;
+ 
+    WAIT_ON_IOBUSY(stat);
+    IO_WRITE((u32)osRomBase | devAddr, data);
+
+    return 0;
+}
+
+s32 __osPiRawReadIo(u32 devAddr, u32* data) {
+    register u32 stat;
+
+    WAIT_ON_IOBUSY(stat);
+    *data = IO_READ((u32)osRomBase | devAddr);
+
+    return 0;
+}
+
+s32 osPiWriteIo(u32 devAddr, u32 data) {
+    register s32 ret;
+
+    __osPiGetAccess();
+    ret = __osPiRawWriteIo(devAddr, data);
+    __osPiRelAccess();
+
+    return ret;
+}
+
+s32 osPiReadIo(u32 devAddr, u32* data) {
+    register s32 ret;
+
+    __osPiGetAccess();
+    ret = __osPiRawReadIo(devAddr, data);
+    __osPiRelAccess();
+
+    return ret;
+}
 
 /*==============================
     usb_io_write
