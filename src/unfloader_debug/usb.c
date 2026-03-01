@@ -295,6 +295,17 @@ static u8 d64_extendedaddr = FALSE;
     @return The 4 byte value that was read
 ==============================*/
 
+void *memset(void *dest, int value, size_t count)
+{
+    unsigned char *ptr = dest;
+    unsigned char byte = (unsigned char)value;
+
+    while (count--)
+        *ptr++ = byte;
+
+    return dest;
+}
+
 u32 usb_io_read(u32 pi_address)
 {
     #ifndef LIBDRAGON
