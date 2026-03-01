@@ -1287,7 +1287,8 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
 
     if (is_screen_being_faded() == 0) {
         debug_initialize();
-        debug_printf("FOO!");
+        debug_printf("debug_printf - Expected to show up in USB STUFF");
+        osSyncPrintf("osSyncPrintf - Debug message expected to show up in ARES emu\n");
 
         switch (gMainMenuSelection) {
             case MAIN_MENU_NONE:
