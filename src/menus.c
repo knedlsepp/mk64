@@ -20,6 +20,7 @@
 #include <sounds.h>
 #include "spawn_players.h"
 #include "seq_ids.h"
+#include "unfloader_debug/debug.h"
 
 #if ENABLE_DEBUG_MODE
 #define DEBUG_MODE_TOGGLE true
@@ -1040,6 +1041,7 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
             case DEBUG_MENU_DISABLED: {
                 isDebug = false;
                 if ((gMenuDelayTimer >= 46) && (btnAndStick & (A_BUTTON | START_BUTTON))) {
+                    debug_printf("START button pressed on initial screen!");
                     func_8009E1C0();
                     func_800CA330(0x19);
                     play_sound2(SOUND_INTRO_ENTER_MENU);
