@@ -10,6 +10,7 @@ https://github.com/buu342/N64-UNFLoader
 #ifndef LIBDRAGON
     #include <ultra64.h>
     #include <PR/os_internal.h> // Needed for Crash's Linux toolchain
+    #include <PR/R4300.h>
 #else
     #include <libdragon.h>
     #include <stdio.h>
