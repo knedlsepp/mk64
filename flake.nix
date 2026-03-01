@@ -54,6 +54,7 @@
             pkgsCross.gcc # for n64crc
             pkgs.gcc
             cmake
+            ares
           ];
           shellHook = ''
             cp ${baseRomUS} ./baserom.us.z64
