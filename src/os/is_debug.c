@@ -19,7 +19,7 @@ typedef struct {
     /* 0x20 */ u8 data[0x10000 - 0x20];
 } ISVDbg;
 
-#define gISVDbgPrnAdrs ((ISVDbg*) 0xB3FF0000)
+#define gISVDbgPrnAdrs ((ISVDbg*) 0x03FF0000)
 #define ASCII_TO_U32(a, b, c, d) ((u32) ((a << 24) | (b << 16) | (c << 8) | (d << 0)))
 
 void* is_proutSyncPrintf(void* arg, const char* str, u32 count);

@@ -208,6 +208,8 @@ void main_func(void) {
 #ifdef DEBUG
     isPrintfInit(); // init osSyncPrintf
 #endif
+
+    osSyncPrintf("{\"event\":\"game_start\"}\n");
     create_thread(&gIdleThread, 1, &thread1_idle, NULL, gIdleThreadStack + ARRAY_COUNT(gIdleThreadStack), 100);
     osStartThread(&gIdleThread);
 }
