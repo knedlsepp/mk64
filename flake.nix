@@ -1,103 +1,103 @@
 {
-  description = "Mario Kart 64 decompilation project";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    self.submodules = true;
   };
-
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        crossSystem = {
+          config = "mips-linux-gnu"; # prefix expected by scripts in tools/
+          system = "mips64-elf";
+          gcc.arch = "vr4300";
+          gcc.tune = "vr4300";
+          gcc.abi = "32";
+        };
         pkgs = import nixpkgs { inherit system; };
-      in {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            python3
-            python3Packages.pip
-            python3Packages.setuptools
-            python3Packages.wheel
-            # For building tools
-            gcc
-            gnumake
-            pkg-config
-            # For texture conversion
-            imagemagick
-            # Optional: blender for model extraction
-            # blender
-            # For running the ROM
-            # mupen64plus
-          ];
+        pkgsCross = import nixpkgs { inherit system crossSystem; };
+        baseRomUS = pkgs.requireFile {
+          name = "mk64.us.z64";
+          message = ''
+            ==== MISSING BASE ROM =======================================================
 
-          # Shell hook to set up the environment
+            Please rename your ROM to mk64.us.z64 and add it to the Nix store using
+                nix-store --add-fixed sha256 mk64.us.z64
+            then rerun nix-shell.
+          '';
+          sha256 = "1nm52yxbcgzq7k9fr6j77q7c7lvfh4r7svl5nbn3409zss6m7f6n";
+        };
+        baseRomEU = pkgs.requireFile {
+          name = "mk64.eu.v11.z64";
+          message = ''
+            ==== MISSING BASE ROM =======================================================
+
+            Please rename your ROM to mk64.eu.v11.z64 and add it to the Nix store using
+                nix-store --add-fixed sha256 mk64.eu.v11.z64
+            then rerun nix-shell.
+          '';
+          sha256 = "0vffw5v41bi1p0zjw2cc0bhlj7ccv6v83cna00i53sf5pdl2m7cd";
+        };
+      in {
+        devShells.default = pkgsCross.mkShell {
+          name = "devshell";
+          packages = with pkgs; [
+            ninja # needed for ninja -t compdb in run, as n2 doesn't support it
+            n2 # same as ninja, but with prettier output
+            zlib
+            libyaml
+            python3
+            python3Packages.virtualenv
+            ccache
+            git
+            iconv
+            pkgsCross.gcc # for n64crc
+            pkgs.gcc
+            cmake
+            ares
+          ];
           shellHook = ''
-            echo "Setting up Mario Kart 64 build environment..."
-            
-            # Check for MIPS toolchain
-            if ! command -v mips64-elf-gcc &> /dev/null; then
-              echo ""
-              echo "==================================================================="
-              echo "MIPS toolchain not found!"
-              echo "You need to install a MIPS64 ELF toolchain for N64 development."
-              echo ""
-              echo "On NixOS, you can install it with:"
-              echo "  nix-env -iA nixpkgs.mips64-elf-toolchain"
-              echo ""
-              echo "Or manually install from:"
-              echo "  https://github.com/n64decomp/toolchains"
-              echo "==================================================================="
-              echo ""
-            fi
-            
-            # Check if baserom exists, if not, guide user to place it
-            if [ ! -f "baserom.us.z64" ] && [ ! -f "baserom.eu.v10.z64" ] && [ ! -f "baserom.eu.v11.z64" ]; then
-              echo ""
-              echo "==================================================================="
-              echo "No baserom file found!"
-              echo "Please place your Mario Kart 64 ROM in the project root as:"
-              echo "  baserom.us.z64      (for US version)"
-              echo "  baserom.eu.v10.z64  (for EU 1.0 version)"
-              echo "  baserom.eu.v11.z64  (for EU 1.1 version)"
-              echo ""
-              echo "The ROM should have the following SHA1 hashes:"
-              echo "  US:  579c48e211ae952530ffc8738709f078d5dd215e"
-              echo "  EU:  f6b5f519dd57ea59e9f013cc64816e9d273b2329 (v1.1)"
-              echo "==================================================================="
-              echo ""
-            fi
-            
-            echo "Build environment ready!"
-            echo "You can now run:"
-            echo "  make VERSION=us      # Build US version"
-            echo "  make VERSION=eu.v11  # Build EU 1.1 version"
+            cp ${baseRomUS} ./baserom.us.z64
+            cp ${baseRomEU} ./baserom.eu.v11.z64
           '';
         };
 
-        packages.default = pkgs.stdenv.mkDerivation {
-          name = "mk64-build";
-          src = ./.;
+        packages.default = pkgs.stdenvNoCC.mkDerivation {
+          name = "mk64-rom";
+          src = self;
           nativeBuildInputs = with pkgs; [
+            ninja
+            n2
+            zlib
+            libyaml
             python3
-            python3Packages.pip
-            python3Packages.setuptools
-            python3Packages.wheel
+            python3Packages.virtualenv
+            ccache
+            git
+            iconv
+            pkgsCross.gcc
             gcc
+            cmake
             gnumake
-            pkg-config
-            imagemagick
           ];
-
-          phases = "unpackPhase installPhase";
-
+          dontUseCmakeConfigure = true;
+          buildPhase = ''
+            # Copy base ROMs
+            cp ${baseRomUS} ./baserom.us.z64
+            cp ${baseRomEU} ./baserom.eu.v11.z64
+            
+            # Build tools
+            make -C tools -j$(nproc)
+            
+            # Extract assets
+            make assets -j$(nproc)
+            
+            # Build ROM
+            make -j$(nproc)
+          '';
           installPhase = ''
             mkdir -p $out
-            cp -r . $out/
-            
-            # Build the tools
-            echo "Building tools..."
-            make -C tools
-            
-            echo "Mario Kart 64 build environment installed to $out"
+            cp build/us/mk64.us.z64 $out/mk64.us.z64
           '';
         };
       }
