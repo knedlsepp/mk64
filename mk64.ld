@@ -83,13 +83,13 @@ SECTIONS
       BUILD_DIR/src/audio/seqplayer.o(.text*);
       BUILD_DIR/src/audio/external.o(.text*);
       BUILD_DIR/src/audio/port_eu.o(.text*);
+      BUILD_DIR/src/os/osCartRomInit.o(.text*);
       #if DEBUG
-         BUILD_DIR/src/os/osCartRomInit.o(.text*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.text*);
          BUILD_DIR/src/debug/debug.o(.text*);
          BUILD_DIR/src/os/sprintf.o(.text*);
-         BUILD_DIR/src/os/is_debug.o(.text*);
       #endif
+      BUILD_DIR/src/os/is_debug.o(.text*);
       BUILD_DIR/src/os/osCreateThread.o(.text);
       #ifdef VERSION_EU
          . += 0x40;
@@ -139,7 +139,7 @@ SECTIONS
       BUILD_DIR/src/os/guPerspectiveF.o(.text*);
       BUILD_DIR/src/os/guLookAtF.o(.text*);
       BUILD_DIR/src/os/guTranslateF.o(.text*);
-      BUILD_DIR/src/os/osSyncPrintf.o(.text*);
+      // BUILD_DIR/src/os/osSyncPrintf.o(.text*);
       BUILD_DIR/src/os/guMtxCatL.o(.text*);
       BUILD_DIR/src/os/osPfsSearchFile.o(.text*);
       BUILD_DIR/src/os/osPfsDeleteFile.o(.text*);
@@ -339,11 +339,11 @@ SECTIONS
       BUILD_DIR/src/code_800AF9B0.o(.bss*);
       BUILD_DIR/src/menus.o(.bss*);
       BUILD_DIR/src/save.o(.bss*);
+      BUILD_DIR/src/os/is_debug.o(.bss*);
+      BUILD_DIR/src/os/osCartRomInit.o(.bss*);
       #if DEBUG
-         BUILD_DIR/src/os/osCartRomInit.o(.bss*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.bss*);
          BUILD_DIR/src/debug/debug.o(.bss*);
-         BUILD_DIR/src/os/is_debug.o(.bss*);
          BUILD_DIR/src/os/sprintf.o(.bss*);
       #endif
       BUILD_DIR/src/audio/external.o(.bss*);

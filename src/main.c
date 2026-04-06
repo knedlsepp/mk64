@@ -205,9 +205,7 @@ void main_func(void) {
     osTvType = TV_TYPE_PAL;
 #endif
     osInitialize();
-#ifdef DEBUG
-    isPrintfInit(); // init osSyncPrintf
-#endif
+    isPrintfInit(); // init osSyncPrintf even release mode
 
     osSyncPrintf("{\"event\":\"game_start\"}\n");
     create_thread(&gIdleThread, 1, &thread1_idle, NULL, gIdleThreadStack + ARRAY_COUNT(gIdleThreadStack), 100);
