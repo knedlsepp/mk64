@@ -1954,6 +1954,9 @@ void func_80090970(Player* player, s8 playerId, s8 arg2) {
                         player->lakituProps &= ~LAKITU_SCENE;
                         if ((player->topSpeed * 0.9) <= player->currentSpeed) {
                             func_8008F104(player, playerId);
+                            if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
+                                osSyncPrintf("{\"event\":\"early_start_spinout\", \"playerIndex\":%d}\n", playerId);
+                            }
                         }
                     }
                 }

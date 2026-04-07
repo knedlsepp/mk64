@@ -2691,6 +2691,14 @@ void func_800C76C0(u8 playerId) {
 void func_800C847C(u8 playerId) {
     if ((gPlayers[playerId].oobProps & UNDER_OOB_OR_FLUID_LEVEL) == UNDER_OOB_OR_FLUID_LEVEL) {
         if (D_800E9F74[playerId] == 0) {
+            // Log the event before playing the sound effect
+            if ((gPlayers[playerId].type & PLAYER_HUMAN) == PLAYER_HUMAN) {
+                if ((gCurrentCourseId == COURSE_BOWSER_CASTLE) || (gCurrentCourseId == COURSE_BIG_DONUT)) {
+                    osSyncPrintf("{\"event\":\"fell_in_lava\", \"playerIndex\":%d}\n", playerId);
+                } else {
+                    osSyncPrintf("{\"event\":\"fell_in_water\", \"playerIndex\":%d}\n", playerId);
+                }
+            }
             if ((s32) D_800EA1C0 < 2) {
                 func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xF9, 0x26));
             } else {
