@@ -6023,7 +6023,9 @@ void clear_all_player_balloons(UNUSED Player* player, s8 playerIndex) {
 }
 
 void pop_player_balloon(Player* player, s8 playerIndex) {
-    osSyncPrintf("{\"event\":\"balloon_pop\", \"playerIndex\":%d}\n", playerIndex);
+    if (gGamestate == RACING) {
+        osSyncPrintf("{\"event\":\"balloon_pop\", \"playerIndex\":%d}\n", playerIndex);
+    }
     if (gPlayerBalloonCount[playerIndex] >= 0) {
         gPlayerBalloonStatus[playerIndex][gPlayerBalloonCount[playerIndex]] &= ~BALLOON_STATUS_PRESENT;
         gPlayerBalloonStatus[playerIndex][gPlayerBalloonCount[playerIndex]] |= BALLOON_STATUS_DEPARTING;
