@@ -42,7 +42,7 @@ GCC ?= 0
 #  us     - builds the 1997 North American version
 #  eu.v10 - builds the 1997 1.0 PAL version
 #  eu.v11 - builds the 1997 1.1 PAL version
-VERSION ?= us
+VERSION ?= eu.v11
 $(eval $(call validate-option,VERSION,us eu.v10 eu.v11))
 
 ifeq      ($(VERSION),us)
