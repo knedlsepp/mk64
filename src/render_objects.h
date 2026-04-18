@@ -414,7 +414,6 @@ void load_debug_font(void);
 void func_80057778(void);
 void debug_print_str2(s32, s32, char*);
 void print_str_num(s32, s32, char*, s32);
-void render_centered_hit_messages(void);
 void func_80057814(s32, s32, char*, u32);
 void func_80057858(s32, s32, char*, u32);
 void func_800578B0(s32, s32, char*, u32);

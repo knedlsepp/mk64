@@ -37,7 +37,6 @@
 #include "spawn_players.h"
 #include "sounds.h"
 #include "data/some_data.h"
-#include "player_controller.h"
 
 //! @warning this macro is undef'd at the end of this file
 #define MAKE_RGB(r, g, b) (((r) << 0x10) | ((g) << 0x08) | (b << 0x00))
@@ -947,11 +946,6 @@ void render_hud(u32 arg0) {
                 }
                 break;
         }
-    }
-    
-    // Render hit messages for all players
-    if (gHUDDisable == 0) {
-        render_centered_hit_messages();
     }
 }
 

@@ -185,21 +185,6 @@ s16* gListCPUforBowser[] = {
 s16** cpu_forTwoPlayer[] = { gListCPUforMario, gListCPUforLuigi, gListCPUforYoshi, gListCPUforToad,
                              gListCPUforDk,    gListCPUforWario, gListCPUforPeach, gListCPUforBowser };
 
-// Hit message display system
-HitDisplay gPlayerHitDisplay[8] = {0};
-
-void queue_player_hit_message(s8 playerId, const char* messageType) {
-    s32 i;
-    if (playerId >= 0 && playerId < 8 && gGamestate == RACING && messageType != NULL) {
-        // Copy message safely (max 15 chars + null terminator)
-        for (i = 0; i < 15 && messageType[i] != '\0'; i++) {
-            gPlayerHitDisplay[playerId].message[i] = messageType[i];
-        }
-        gPlayerHitDisplay[playerId].message[i] = '\0';
-        gPlayerHitDisplay[playerId].timer = 90;  // ~1.5 seconds at 60fps
-    }
-}
-
 // func_80027D00
 s32 get_player_index_for_player(Player* player) {
     s32 index;
@@ -1409,7 +1394,6 @@ void apply_triggers(Player* player, s8 playerId, UNUSED s8 screenId) {
         func_8008CDC0(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"hit_banana\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if ((player->triggers & SHROOM_TRIGGER) == SHROOM_TRIGGER) {
@@ -1428,35 +1412,30 @@ void apply_triggers(Player* player, s8 playerId, UNUSED s8 screenId) {
         trigger_squish(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"squished\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if ((player->triggers & LIGHTNING_STRIKE_TRIGGER) == LIGHTNING_STRIKE_TRIGGER) {
         trigger_lightning_strike(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"lightning_strike\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if ((player->triggers & SPINOUT_TRIGGER) == SPINOUT_TRIGGER) {
         func_8008C73C(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"spinout\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if ((player->triggers & VERTICAL_TUMBLE_TRIGGER) == VERTICAL_TUMBLE_TRIGGER) {
         trigger_vertical_tumble(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"explosion_crash\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if ((player->triggers & HIT_BY_STAR_TRIGGER) == HIT_BY_STAR_TRIGGER) {
         trigger_high_tumble(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"hit_by_star\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if ((player->triggers & BOOST_RAMP_ASPHALT_TRIGGER) == BOOST_RAMP_ASPHALT_TRIGGER) {
@@ -1475,14 +1454,12 @@ void apply_triggers(Player* player, s8 playerId, UNUSED s8 screenId) {
         func_8008D0FC(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"driving_spinout\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
     if (player->triggers & HIT_PADDLE_BOAT_TRIGGER) {
         trigger_vertical_tumble(player, playerId);
         if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"hit_paddle_boat\", \"playerIndex\":%d}\n", playerId);
-            queue_player_hit_message(playerId, "NEGRONI!");
         }
     }
 }

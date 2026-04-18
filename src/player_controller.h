@@ -191,12 +191,4 @@ extern s16** cpu_forTwoPlayer[];
 
 extern s16 D_801656F0;
 
-// Hit message display system
-typedef struct {
-    char message[16];  // Hit type text (e.g., "BANANA", "STAR")
-    s16 timer;         // Frames remaining to display
-} HitDisplay;
-
-extern HitDisplay gPlayerHitDisplay[8];
-
 #endif
