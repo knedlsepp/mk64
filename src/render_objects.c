@@ -35,6 +35,9 @@
 #include "courses/all_course_data.h"
 #include <vehicles.h>
 #include "data/some_data.h"
+#include "player_controller.h"
+
+extern HitDisplay gPlayerHitDisplay[8];
 
 void func_800431B0(Vec3f pos, Vec3su orientation, f32 scale, Vtx* vtx) {
     rsp_set_matrix_transformation(pos, orientation, scale);
@@ -4757,6 +4760,51 @@ void func_80057778(void) {
 
 void debug_print_str2(s32 xPos, s32 yPos, char* str) {
     debug_print_string(&xPos, &yPos, str);
+}
+
+/* Screen layout centers for each player in each mode */
+/* Indexed by [screenMode][playerId] */
+static const s16 sPlayerScreenCentersX[4][8] = {
+    /* SCREEN_MODE_1P */
+    {160, 0, 0, 0, 0, 0, 0, 0},
+    /* SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL */
+    {160, 160, 0, 0, 0, 0, 0, 0},
+    /* SCREEN_MODE_2P_SPLITSCREEN_VERTICAL */
+    {80, 240, 0, 0, 0, 0, 0, 0},
+    /* SCREEN_MODE_3P_4P_SPLITSCREEN */
+    {80, 240, 80, 240, 0, 0, 0, 0},
+};
+
+static const s16 sPlayerScreenCentersY[4][8] = {
+    /* SCREEN_MODE_1P */
+    {120, 0, 0, 0, 0, 0, 0, 0},
+    /* SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL */
+    {60, 180, 0, 0, 0, 0, 0, 0},
+    /* SCREEN_MODE_2P_SPLITSCREEN_VERTICAL */
+    {120, 120, 0, 0, 0, 0, 0, 0},
+    /* SCREEN_MODE_3P_4P_SPLITSCREEN */
+    {60, 60, 180, 180, 0, 0, 0, 0},
+};
+
+void render_centered_hit_messages(void) {
+    s32 i;
+    s32 x;
+    s32 y;
+
+    for (i = 0; i < 8; i++) {
+        if (gPlayerHitDisplay[i].timer > 0 && gPlayerHitDisplay[i].message[0] != 0) {
+            x = sPlayerScreenCentersX[gActiveScreenMode][i];
+            y = sPlayerScreenCentersY[gActiveScreenMode][i];
+
+            if (x != 0 || y != 0) {
+                /* Use menu text system with 2x scale for bigger font */
+                /* NEGRONI! is 8 chars, centered on screen */
+                print_text_mode_1(x - 100, y - 8, gPlayerHitDisplay[i].message, 0, 2.0f, 2.0f);
+            }
+            
+            gPlayerHitDisplay[i].timer--;
+        }
+    }
 }
 
 void print_str_num(s32 arg0, s32 arg1, char* arg2, s32 arg3) {
