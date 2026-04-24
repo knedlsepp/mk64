@@ -867,6 +867,7 @@ s32 use_banana_item(Player* player) {
 void use_thunder_item(Player* player) {
     s32 index;
     Player* otherPlayer;
+    s8 ownerIndex = (s8)(player - gPlayers);
 
     func_8009E5BC();
     if ((player->type & PLAYER_HUMAN) != 0) {
@@ -878,6 +879,9 @@ void use_thunder_item(Player* player) {
         otherPlayer = &gPlayers[index];
         if (player != otherPlayer) {
             otherPlayer->triggers |= LIGHTNING_STRIKE_TRIGGER;
+            if (otherPlayer->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"lightning_used\", \"ownerIndex\":%d, \"playerIndex\":%d}\n", ownerIndex, index);
+            }
         }
     }
 }

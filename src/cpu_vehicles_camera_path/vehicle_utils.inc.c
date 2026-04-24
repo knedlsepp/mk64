@@ -806,6 +806,19 @@ void handle_vehicle_interactions(s32 playerId, Player* player, VehicleStuff* veh
                                                     vehicle->velocity[2], distanceX, distanceY, playerX,
                                                     playerZ) == (s32) 1) {
                             player->triggers |= VERTICAL_TUMBLE_TRIGGER;
+                            if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                                const char* vehicleType = "UNKNOWN";
+                                if (vehicle >= gSchoolBusList && vehicle < &gSchoolBusList[NUM_RACE_SCHOOL_BUSES]) {
+                                    vehicleType = "SCHOOL_BUS";
+                                } else if (vehicle >= gTankerTruckList && vehicle < &gTankerTruckList[NUM_RACE_TANKER_TRUCKS]) {
+                                    vehicleType = "TANKER_TRUCK";
+                                } else if (vehicle >= gCarList && vehicle < &gCarList[NUM_RACE_CARS]) {
+                                    vehicleType = "CAR";
+                                } else if (vehicle >= gBoxTruckList && vehicle < &gBoxTruckList[NUM_RACE_BOX_TRUCKS]) {
+                                    vehicleType = "BOX_TRUCK";
+                                }
+                                osSyncPrintf("{\"event\":\"vehicle_collision\", \"playerIndex\":%d, \"vehicleType\":\"%s\"}\n", playerId, vehicleType);
+                            }
                         }
                     }
                 }
