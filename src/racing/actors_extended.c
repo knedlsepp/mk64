@@ -36,10 +36,6 @@ void copy_collision(Collision* src, Collision* dest) {
 void triple_shell_actor_collide_with_player(struct ShellActor* shell, s32 shellType) {
     TripleShellParent* parent = (TripleShellParent*) &gActorList[shell->parentIndex];
 
-    if (gGamestate == RACING && !gDemoMode) {
-        osSyncPrintf("{\"event\":\"triple_shell_bounce\", \"playerIndex\":%d, \"shellType\":\"%s\"}\n", parent->playerId, actor_type_to_string(shellType));
-    }
-
     parent->shellsAvailable--;
 
     switch ((s16) shell->shellId) {
