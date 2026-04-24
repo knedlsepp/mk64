@@ -1116,6 +1116,8 @@ void func_802903B0(void) {
 }
 
 void func_802903D8(Player* playerOne, Player* playerTwo) {
+    s8 playerIndexOne = (s8)(playerOne - gPlayers);
+    s8 playerIndexTwo = (s8)(playerTwo - gPlayers);
     f32 sp70 = (playerOne->boundingBoxSize + playerTwo->boundingBoxSize) - 5.0f;
     f32 temp_f0;
     f32 sp74;
@@ -1154,27 +1156,48 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
             func_8008FC1C(playerOne);
             func_8008FC1C(playerTwo);
             func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
+            if ((playerOne->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"double_vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d}\n", playerIndexOne, playerIndexTwo);
+            }
+            if ((playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"double_vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d}\n", playerIndexOne, playerIndexTwo);
+            }
             return;
         } else {
             playerTwo->triggers |= VERTICAL_TUMBLE_TRIGGER;
             func_8008FC1C(playerOne);
             func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
+            if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"victimIndex\":%d}\n", playerIndexOne, playerIndexTwo, playerIndexTwo);
+            }
         }
     } else if (playerTwo->type & PLAYER_UNKNOWN_0x40) {
         playerOne->triggers |= VERTICAL_TUMBLE_TRIGGER;
         func_8008FC1C(playerTwo);
         func_800C9060(playerOne - gPlayerOne, 0x19008001U);
+        if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+            osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"victimIndex\":%d}\n", playerIndexOne, playerIndexTwo, playerIndexOne);
+        }
         return;
     }
     if (playerOne->effects & STAR_EFFECT) {
         if (!(playerTwo->effects & STAR_EFFECT)) {
             playerTwo->triggers |= HIT_BY_STAR_TRIGGER;
+            if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"star_hit\", \"ownerIndex\":%d, \"playerIndex\":%d}\n", playerIndexOne, playerIndexTwo);
+            }
         }
     } else if (playerTwo->effects & STAR_EFFECT) {
         playerOne->triggers |= HIT_BY_STAR_TRIGGER;
+        if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+            osSyncPrintf("{\"event\":\"star_hit\", \"ownerIndex\":%d, \"playerIndex\":%d}\n", playerIndexTwo, playerIndexOne);
+        }
     } else {
         playerOne->effects |= ENEMY_BONK_EFFECT;
         playerTwo->effects |= ENEMY_BONK_EFFECT;
+        if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
+            osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"enemy_bonk\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d}\n", playerIndexOne, playerIndexTwo);
+        }
     }
     temp_f0_2 = sqrtf((sp54[0] * sp54[0]) + (sp54[1] * sp54[1]) + (sp54[2] * sp54[2]));
     sp60[0] /= temp_f0;
