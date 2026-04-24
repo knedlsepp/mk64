@@ -207,7 +207,9 @@ void main_func(void) {
     osInitialize();
     isPrintfInit(); // init osSyncPrintf even release mode
 
-    osSyncPrintf("{\"event\":\"game_start\"}\n");
+    if (!gDemoMode) {
+        osSyncPrintf("{\"event\":\"game_start\"}\n");
+    }
     create_thread(&gIdleThread, 1, &thread1_idle, NULL, gIdleThreadStack + ARRAY_COUNT(gIdleThreadStack), 100);
     osStartThread(&gIdleThread);
 }

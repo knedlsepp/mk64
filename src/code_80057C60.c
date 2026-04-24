@@ -6,6 +6,7 @@
 #include <ultra64.h>
 #include <macros.h>
 #include <PR/gbi.h>
+#include <PR/os.h>
 #include <mk64.h>
 #include <course.h>
 
@@ -6023,7 +6024,7 @@ void clear_all_player_balloons(UNUSED Player* player, s8 playerIndex) {
 }
 
 void pop_player_balloon(Player* player, s8 playerIndex) {
-    if (gGamestate == RACING) {
+    if (gGamestate == RACING && !gDemoMode) {
         osSyncPrintf("{\"event\":\"balloon_pop\", \"playerIndex\":%d}\n", playerIndex);
     }
     if (gPlayerBalloonCount[playerIndex] >= 0) {

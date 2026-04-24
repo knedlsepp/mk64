@@ -3,7 +3,9 @@
 #include <defines.h>
 #include <mk64.h>
 #include <course.h>
+#include <PR/os.h>
 
+#include "main.h"
 #include "camera.h"
 #include "math_util_2.h"
 #include <sounds.h>
@@ -2692,7 +2694,7 @@ void func_800C847C(u8 playerId) {
     if ((gPlayers[playerId].oobProps & UNDER_OOB_OR_FLUID_LEVEL) == UNDER_OOB_OR_FLUID_LEVEL) {
         if (D_800E9F74[playerId] == 0) {
             // Log the event before playing the sound effect
-            if ((gPlayers[playerId].type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+            if ((gPlayers[playerId].type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
                 if ((gCurrentCourseId == COURSE_BOWSER_CASTLE) || (gCurrentCourseId == COURSE_BIG_DONUT)) {
                     osSyncPrintf("{\"event\":\"fell_in_lava\", \"playerIndex\":%d}\n", playerId);
                 } else {

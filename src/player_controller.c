@@ -3,6 +3,7 @@
 #include <defines.h>
 #include <mk64.h>
 #include <course.h>
+#include <PR/os.h>
 
 #include "player_controller.h"
 #include "code_800029B0.h"
@@ -1379,19 +1380,19 @@ void func_8002B218(Player* player) {
 void apply_triggers(Player* player, s8 playerId, UNUSED s8 screenId) {
     if ((player->triggers & HIGH_TUMBLE_TRIGGER) == HIGH_TUMBLE_TRIGGER) {
         trigger_high_tumble(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"high_tumble\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if ((player->triggers & LOW_TUMBLE_TRIGGER) == LOW_TUMBLE_TRIGGER) {
         func_8008C528(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"low_tumble\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if ((player->triggers & HIT_BANANA_TRIGGER) == HIT_BANANA_TRIGGER) {
         func_8008CDC0(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"hit_banana\", \"playerIndex\":%d}\n", playerId);
         }
     }
@@ -1409,31 +1410,31 @@ void apply_triggers(Player* player, s8 playerId, UNUSED s8 screenId) {
     }
     if ((player->triggers & THWOMP_SQUISH_TRIGGER) == THWOMP_SQUISH_TRIGGER) {
         trigger_squish(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"squished\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if ((player->triggers & LIGHTNING_STRIKE_TRIGGER) == LIGHTNING_STRIKE_TRIGGER) {
         trigger_lightning_strike(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"lightning_strike\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if ((player->triggers & SPINOUT_TRIGGER) == SPINOUT_TRIGGER) {
         func_8008C73C(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"spinout\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if ((player->triggers & VERTICAL_TUMBLE_TRIGGER) == VERTICAL_TUMBLE_TRIGGER) {
         trigger_vertical_tumble(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"explosion_crash\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if ((player->triggers & HIT_BY_STAR_TRIGGER) == HIT_BY_STAR_TRIGGER) {
         trigger_high_tumble(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"hit_by_star\", \"playerIndex\":%d}\n", playerId);
         }
     }
@@ -1451,13 +1452,13 @@ void apply_triggers(Player* player, s8 playerId, UNUSED s8 screenId) {
     }
     if (player->triggers & DRIVING_SPINOUT_TRIGGER) {
         func_8008D0FC(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"driving_spinout\", \"playerIndex\":%d}\n", playerId);
         }
     }
     if (player->triggers & HIT_PADDLE_BOAT_TRIGGER) {
         trigger_vertical_tumble(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"hit_paddle_boat\", \"playerIndex\":%d}\n", playerId);
         }
     }
@@ -1963,7 +1964,7 @@ void func_8002C954(Player* player, s8 playerId, Vec3f velocity) {
          ((player->collision.unk34 == 0) && ((player->effects & TERRAIN_TUMBLE_EFFECT) == 0))) &&
         (((player->lakituProps & HELD_BY_LAKITU) == 0) || (!(player->lakituProps & LAKITU_SCENE)))) {
         func_8008F494(player, playerId);
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"terrain_tumble\", \"playerIndex\":%d}\n", playerId);
         }
     }
@@ -2403,7 +2404,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
         ((player->effects & TERRAIN_TUMBLE_EFFECT) != TERRAIN_TUMBLE_EFFECT)) {
         if ((!(player->lakituProps & HELD_BY_LAKITU)) || (!(player->lakituProps & LAKITU_SCENE))) {
             func_8008F494(player, playerId);
-            if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+            if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
                 osSyncPrintf("{\"event\":\"terrain_tumble\", \"playerIndex\":%d}\n", playerId);
             }
         }
@@ -2700,7 +2701,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
         (((player->speed / 18.0f) * 216.0f) >= 20.0f)) {
         if ((!(player->lakituProps & HELD_BY_LAKITU)) || (!(player->lakituProps & LAKITU_SCENE))) {
             func_8008F494(player, playerId);
-            if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+            if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
                 osSyncPrintf("{\"event\":\"terrain_tumble\", \"playerIndex\":%d}\n", playerId);
             }
         }
@@ -3449,7 +3450,7 @@ void player_accelerate_alternative(Player* player) {
     if ((player->triggers * 8) < 0) {
         func_8008F104(player, player_index);
         player->triggers &= ~START_SPINOUT_TRIGGER;
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"early_start_spinout\", \"playerIndex\":%d}\n", player_index);
         }
     }
@@ -3477,7 +3478,7 @@ void player_decelerate_alternative(Player* player, f32 speed) {
     if ((player->triggers * 8) < 0) {
         func_8008F104(player, player_index);
         player->triggers &= ~START_SPINOUT_TRIGGER;
-        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING) {
+        if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
             osSyncPrintf("{\"event\":\"early_start_spinout\", \"playerIndex\":%d}\n", player_index);
         }
     }
