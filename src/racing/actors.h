@@ -83,6 +83,8 @@ void destroy_actor(struct Actor*);
 s16 try_remove_destructable_item(Vec3f, Vec3s, Vec3f, s16);
 s16 add_actor_to_empty_slot(Vec3f, Vec3s, Vec3f, s16);
 s16 spawn_actor_at_pos(Vec3f, s16);
+const char* actor_type_to_string(s16 type);
+
 bool query_and_resolve_collision_player_actor(Player*, Vec3f, f32, f32, f32);
 bool collision_mario_sign(Player*, struct Actor*);
 bool collision_piranha_plant(Player*, struct PiranhaPlant*);

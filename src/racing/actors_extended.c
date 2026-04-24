@@ -3,6 +3,7 @@
 #include <defines.h>
 #include <actor_types.h>
 #include "code_800029B0.h"
+#include "main.h"
 #include "math_util.h"
 #include "memory.h"
 #include "path.h"
@@ -34,6 +35,10 @@ void copy_collision(Collision* src, Collision* dest) {
 
 void triple_shell_actor_collide_with_player(struct ShellActor* shell, s32 shellType) {
     TripleShellParent* parent = (TripleShellParent*) &gActorList[shell->parentIndex];
+
+    if (gGamestate == RACING && !gDemoMode) {
+        osSyncPrintf("{\"event\":\"triple_shell_bounce\", \"playerIndex\":%d, \"shellType\":\"%s\"}\n", parent->playerId, actor_type_to_string(shellType));
+    }
 
     parent->shellsAvailable--;
 

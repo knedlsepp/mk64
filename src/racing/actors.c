@@ -2036,6 +2036,9 @@ void play_sound_on_destructible_actor_collision(struct Actor* arg0, struct Actor
 void evaluate_actor_collision_between_two_destructible_actors(struct Actor* actor1, struct Actor* actor2) {
     if (query_collision_actor_vs_actor(actor1, actor2) == COLLISION) {
         if ((actor1->type == ACTOR_BLUE_SPINY_SHELL) && (actor2->type == ACTOR_BLUE_SPINY_SHELL)) {
+            if (gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"actor_to_actor_collision\", \"actor1Type\":\"%s\", \"actor2Type\":\"%s\"}\n", actor_type_to_string(actor1->type), actor_type_to_string(actor2->type));
+            }
             destroy_destructable_actor(actor1);
             destroy_destructable_actor(actor2);
             actor1->flags |= 0x100;
@@ -2056,7 +2059,61 @@ void evaluate_actor_collision_between_two_destructible_actors(struct Actor* acto
         } else {
             destroy_destructable_actor(actor2); // automatically destroy if it's something different of a blueshell
         }
+        if (gGamestate == RACING && !gDemoMode) {
+            osSyncPrintf("{\"event\":\"actor_to_actor_collision\", \"actor1Type\":\"%s\", \"actor2Type\":\"%s\"}\n", actor_type_to_string(actor1->type), actor_type_to_string(actor2->type));
+        }
         play_sound_on_destructible_actor_collision(actor1, actor2);
+    }
+}
+
+const char* actor_type_to_string(s16 type) {
+    switch (type) {
+        case ACTOR_UNKNOWN_0x01: return "UNKNOWN_0x01";
+        case ACTOR_TREE_MARIO_RACEWAY: return "TREE_MARIO_RACEWAY";
+        case ACTOR_TREE_YOSHI_VALLEY: return "TREE_YOSHI_VALLEY";
+        case ACTOR_TREE_ROYAL_RACEWAY: return "TREE_ROYAL_RACEWAY";
+        case ACTOR_FALLING_ROCK: return "FALLING_ROCK";
+        case ACTOR_BANANA: return "BANANA";
+        case ACTOR_GREEN_SHELL: return "GREEN_SHELL";
+        case ACTOR_RED_SHELL: return "RED_SHELL";
+        case ACTOR_YOSHI_EGG: return "YOSHI_EGG";
+        case ACTOR_PIRANHA_PLANT: return "PIRANHA_PLANT";
+        case ACTOR_UNKNOWN_0x0B: return "UNKNOWN_0x0B";
+        case ACTOR_ITEM_BOX: return "ITEM_BOX";
+        case ACTOR_FAKE_ITEM_BOX: return "FAKE_ITEM_BOX";
+        case ACTOR_BANANA_BUNCH: return "BANANA_BUNCH";
+        case ACTOR_TRAIN_ENGINE: return "TRAIN_ENGINE";
+        case ACTOR_TRAIN_TENDER: return "TRAIN_TENDER";
+        case ACTOR_TRAIN_PASSENGER_CAR: return "TRAIN_PASSENGER_CAR";
+        case ACTOR_COW: return "COW";
+        case ACTOR_TREE_MOO_MOO_FARM: return "TREE_MOO_MOO_FARM";
+        case ACTOR_UNKNOWN_0x14: return "UNKNOWN_0x14";
+        case ACTOR_TRIPLE_GREEN_SHELL: return "TRIPLE_GREEN_SHELL";
+        case ACTOR_TRIPLE_RED_SHELL: return "TRIPLE_RED_SHELL";
+        case ACTOR_MARIO_SIGN: return "MARIO_SIGN";
+        case ACTOR_UNKNOWN_0x18: return "UNKNOWN_0x18";
+        case ACTOR_PALM_TREE: return "PALM_TREE";
+        case ACTOR_UNKNOWN_0x1A: return "UNKNOWN_0x1A";
+        case ACTOR_UNKNOWN_0x1B: return "UNKNOWN_0x1B";
+        case ACTOR_TREE_BOWSERS_CASTLE: return "TREE_BOWSERS_CASTLE";
+        case ACTOR_TREE_FRAPPE_SNOWLAND: return "TREE_FRAPPE_SNOWLAND";
+        case ACTOR_CACTUS1_KALAMARI_DESERT: return "CACTUS1_KALIMARI_DESERT";
+        case ACTOR_CACTUS2_KALAMARI_DESERT: return "CACTUS2_KALIMARI_DESERT";
+        case ACTOR_CACTUS3_KALAMARI_DESERT: return "CACTUS3_KALIMARI_DESERT";
+        case ACTOR_BUSH_BOWSERS_CASTLE: return "BUSH_BOWSERS_CASTLE";
+        case ACTOR_UNKNOWN_0x21: return "UNKNOWN_0x21";
+        case ACTOR_WARIO_SIGN: return "WARIO_SIGN";
+        case ACTOR_UNKNOWN_0x23: return "UNKNOWN_0x23";
+        case ACTOR_BOX_TRUCK: return "BOX_TRUCK";
+        case ACTOR_PADDLE_BOAT: return "PADDLE_BOAT";
+        case ACTOR_RAILROAD_CROSSING: return "RAILROAD_CROSSING";
+        case ACTOR_SCHOOL_BUS: return "SCHOOL_BUS";
+        case ACTOR_TANKER_TRUCK: return "TANKER_TRUCK";
+        case ACTOR_BLUE_SPINY_SHELL: return "BLUE_SPINY_SHELL";
+        case ACTOR_HOT_AIR_BALLOON_ITEM_BOX: return "HOT_AIR_BALLOON_ITEM_BOX";
+        case ACTOR_CAR: return "CAR";
+        case ACTOR_KIWANO_FRUIT: return "KIWANO_FRUIT";
+        default: return "UNKNOWN";
     }
 }
 
@@ -2073,7 +2130,11 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
     switch (actor->type) {
         case ACTOR_YOSHI_EGG:
             if (!(player->effects & BOO_EFFECT) && !(player->type & PLAYER_INVISIBLE_OR_BOMB)) {
-                collision_yoshi_egg(player, (struct YoshiValleyEgg*) actor);
+                if (collision_yoshi_egg(player, (struct YoshiValleyEgg*) actor)) {
+                    if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                        osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
+                    }
+                }
             }
             break;
         case ACTOR_BANANA:
@@ -2091,6 +2152,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             }
             player->triggers |= HIT_BANANA_TRIGGER;
             owner = &gPlayers[temp_v1];
+            if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+            }
             if (owner->type & PLAYER_HUMAN) {
                 if (actor->flags & 0xF) {
                     if (temp_lo != temp_v1) {
@@ -2121,6 +2185,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             player->triggers |= LOW_TUMBLE_TRIGGER;
             func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             owner = &gPlayers[temp_v1];
+            if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+            }
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
                 func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
             }
@@ -2140,6 +2207,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
                 func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             }
             owner = &gPlayers[temp_v1];
+            if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+            }
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
                 func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
             }
@@ -2165,6 +2235,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
                 func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             }
             owner = &gPlayers[temp_v1];
+            if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+            }
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
                 func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
             }
@@ -2172,12 +2245,16 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             break;
         case ACTOR_PIRANHA_PLANT:
             if (!(player->effects & BOO_EFFECT)) {
-                collision_piranha_plant(player, (struct PiranhaPlant*) actor);
+                if (collision_piranha_plant(player, (struct PiranhaPlant*) actor) && player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                    osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
+                }
             }
             break;
         case ACTOR_MARIO_SIGN:
             if (!(player->effects & BOO_EFFECT)) {
-                collision_mario_sign(player, actor);
+                if (collision_mario_sign(player, actor) && player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                    osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
+                }
             }
             break;
         case ACTOR_TREE_MARIO_RACEWAY:
@@ -2193,7 +2270,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
         case ACTOR_CACTUS3_KALAMARI_DESERT:
         case ACTOR_BUSH_BOWSERS_CASTLE:
             if (!(player->effects & BOO_EFFECT)) {
-                collision_tree(player, actor);
+                if (collision_tree(player, actor) && player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                    osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
+                }
             }
             break;
         case ACTOR_FALLING_ROCK:
@@ -2207,6 +2286,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
                         actor->velocity[1] = 10.0f;
                     } else {
                         trigger_squish(player, player - gPlayerOne);
+                    }
+                    if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                        osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
                     }
                 }
             }
@@ -2223,6 +2305,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             }
             player->triggers |= VERTICAL_TUMBLE_TRIGGER;
             owner = &gPlayers[temp_v1];
+            if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+            }
             if (owner->type & PLAYER_HUMAN) {
                 if (actor->flags & 0xF) {
                     if (temp_lo != temp_v1) {
@@ -2248,6 +2333,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
                 actor->state = 3;
                 actor->flags = -0x8000;
                 actor->unk_04 = 0;
+                if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                    osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
+                }
                 if (player->type & PLAYER_HUMAN) {
                     func_8007ABFC(player - gPlayerOne, 7);
                 }
@@ -2261,6 +2349,9 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
                 actor->state = 3;
                 actor->flags = -0x8000;
                 actor->unk_04 = 0;
+                if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
+                    osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":-1}\n", temp_lo, actor_type_to_string(actor->type));
+                }
                 if (player->type & PLAYER_HUMAN) {
                     func_8007ABFC(player - gPlayerOne, 0);
                 }
