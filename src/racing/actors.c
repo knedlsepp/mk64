@@ -2153,7 +2153,7 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             player->triggers |= HIT_BANANA_TRIGGER;
             owner = &gPlayers[temp_v1];
             if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d, \"isHumanPlayer\":true, \"isHumanOwner\":%s}\n", temp_lo, actor_type_to_string(actor->type), temp_v1, (owner->type & PLAYER_HUMAN) ? "true" : "false");
             }
             if (owner->type & PLAYER_HUMAN) {
                 if (actor->flags & 0xF) {
@@ -2186,7 +2186,7 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             owner = &gPlayers[temp_v1];
             if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d, \"isHumanPlayer\":true, \"isHumanOwner\":%s}\n", temp_lo, actor_type_to_string(actor->type), temp_v1, (owner->type & PLAYER_HUMAN) ? "true" : "false");
             }
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
                 func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
@@ -2208,7 +2208,7 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             }
             owner = &gPlayers[temp_v1];
             if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d, \"isHumanPlayer\":true, \"isHumanOwner\":%s}\n", temp_lo, actor_type_to_string(actor->type), temp_v1, (owner->type & PLAYER_HUMAN) ? "true" : "false");
             }
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
                 func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
@@ -2236,7 +2236,7 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             }
             owner = &gPlayers[temp_v1];
             if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d, \"isHumanPlayer\":true, \"isHumanOwner\":%s}\n", temp_lo, actor_type_to_string(actor->type), temp_v1, (owner->type & PLAYER_HUMAN) ? "true" : "false");
             }
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
                 func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
@@ -2306,7 +2306,7 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             player->triggers |= VERTICAL_TUMBLE_TRIGGER;
             owner = &gPlayers[temp_v1];
             if (player->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d}\n", temp_lo, actor_type_to_string(actor->type), temp_v1);
+                osSyncPrintf("{\"event\":\"actor_collision\", \"playerIndex\":%d, \"actorType\":\"%s\", \"ownerIndex\":%d, \"isHumanPlayer\":true, \"isHumanOwner\":%s}\n", temp_lo, actor_type_to_string(actor->type), temp_v1, (owner->type & PLAYER_HUMAN) ? "true" : "false");
             }
             if (owner->type & PLAYER_HUMAN) {
                 if (actor->flags & 0xF) {

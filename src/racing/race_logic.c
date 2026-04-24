@@ -1157,10 +1157,10 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
             func_8008FC1C(playerTwo);
             func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
             if ((playerOne->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"double_vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d}\n", playerIndexOne, playerIndexTwo);
+                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"double_vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"isHumanOne\":true, \"isHumanTwo\":%s}\n", playerIndexOne, playerIndexTwo, (playerTwo->type & PLAYER_HUMAN) ? "true" : "false");
             }
             if ((playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"double_vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d}\n", playerIndexOne, playerIndexTwo);
+                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"double_vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"isHumanOne\":%s, \"isHumanTwo\":true}\n", playerIndexOne, playerIndexTwo, (playerOne->type & PLAYER_HUMAN) ? "true" : "false");
             }
             return;
         } else {
@@ -1168,7 +1168,7 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
             func_8008FC1C(playerOne);
             func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
             if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"victimIndex\":%d}\n", playerIndexOne, playerIndexTwo, playerIndexTwo);
+                osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"victimIndex\":%d, \"isHumanOne\":%s, \"isHumanTwo\":%s}\n", playerIndexOne, playerIndexTwo, playerIndexTwo, (playerOne->type & PLAYER_HUMAN) ? "true" : "false", (playerTwo->type & PLAYER_HUMAN) ? "true" : "false");
             }
         }
     } else if (playerTwo->type & PLAYER_UNKNOWN_0x40) {
@@ -1176,7 +1176,7 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
         func_8008FC1C(playerTwo);
         func_800C9060(playerOne - gPlayerOne, 0x19008001U);
         if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-            osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"victimIndex\":%d}\n", playerIndexOne, playerIndexTwo, playerIndexOne);
+            osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"vertical_tumble\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"victimIndex\":%d, \"isHumanOne\":%s, \"isHumanTwo\":%s}\n", playerIndexOne, playerIndexTwo, playerIndexOne, (playerOne->type & PLAYER_HUMAN) ? "true" : "false", (playerTwo->type & PLAYER_HUMAN) ? "true" : "false");
         }
         return;
     }
@@ -1184,19 +1184,19 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
         if (!(playerTwo->effects & STAR_EFFECT)) {
             playerTwo->triggers |= HIT_BY_STAR_TRIGGER;
             if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"star_hit\", \"ownerIndex\":%d, \"playerIndex\":%d}\n", playerIndexOne, playerIndexTwo);
+                osSyncPrintf("{\"event\":\"star_hit\", \"ownerIndex\":%d, \"playerIndex\":%d, \"isHumanOwner\":%s, \"isHumanPlayer\":%s}\n", playerIndexOne, playerIndexTwo, (playerOne->type & PLAYER_HUMAN) ? "true" : "false", (playerTwo->type & PLAYER_HUMAN) ? "true" : "false");
             }
         }
     } else if (playerTwo->effects & STAR_EFFECT) {
         playerOne->triggers |= HIT_BY_STAR_TRIGGER;
         if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-            osSyncPrintf("{\"event\":\"star_hit\", \"ownerIndex\":%d, \"playerIndex\":%d}\n", playerIndexTwo, playerIndexOne);
+            osSyncPrintf("{\"event\":\"star_hit\", \"ownerIndex\":%d, \"playerIndex\":%d, \"isHumanOwner\":%s, \"isHumanPlayer\":%s}\n", playerIndexTwo, playerIndexOne, (playerTwo->type & PLAYER_HUMAN) ? "true" : "false", (playerOne->type & PLAYER_HUMAN) ? "true" : "false");
         }
     } else {
         playerOne->effects |= ENEMY_BONK_EFFECT;
         playerTwo->effects |= ENEMY_BONK_EFFECT;
         if ((playerOne->type & PLAYER_HUMAN || playerTwo->type & PLAYER_HUMAN) && gGamestate == RACING && !gDemoMode) {
-            osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"enemy_bonk\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d}\n", playerIndexOne, playerIndexTwo);
+            osSyncPrintf("{\"event\":\"player_collision\", \"type\":\"enemy_bonk\", \"playerIndexOne\":%d, \"playerIndexTwo\":%d, \"isHumanOne\":%s, \"isHumanTwo\":%s}\n", playerIndexOne, playerIndexTwo, (playerOne->type & PLAYER_HUMAN) ? "true" : "false", (playerTwo->type & PLAYER_HUMAN) ? "true" : "false");
         }
     }
     temp_f0_2 = sqrtf((sp54[0] * sp54[0]) + (sp54[1] * sp54[1]) + (sp54[2] * sp54[2]));
