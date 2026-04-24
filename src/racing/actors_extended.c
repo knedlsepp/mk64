@@ -876,7 +876,7 @@ void use_thunder_item(Player* player) {
         if (player != otherPlayer) {
             otherPlayer->triggers |= LIGHTNING_STRIKE_TRIGGER;
             if (otherPlayer->type & PLAYER_HUMAN && gGamestate == RACING && !gDemoMode) {
-                osSyncPrintf("{\"event\":\"lightning_used\", \"ownerIndex\":%d, \"playerIndex\":%d, \"isHumanOwner\":%s, \"isHumanPlayer\":true}\n", ownerIndex, index, (player->type & PLAYER_HUMAN) ? "true" : "false");
+                osSyncPrintf("{\"event\":\"lightning_used\", \"ownerIndex\":%d, \"playerIndex\":%d, \"isHumanOwner\":%s, \"isHumanPlayer\":%s}\n", ownerIndex, index, (player->type & PLAYER_HUMAN) ? "true" : "false", (otherPlayer->type & PLAYER_HUMAN) ? "true" : "false");
             }
         }
     }
