@@ -902,7 +902,7 @@ void game_state_handler(void) {
                     (controller->button & R_TRIG) &&
                     (controller->button & Z_TRIG)) {
                     if (gMenuSelection == START_MENU) {
-                        osSyncPrintf("{\"event\":\"negroni_code\", \"playerId\":%d}\n", playerId);
+                        osSyncPrintf("{\"event\":\"negroni_code\", \"playerIndex\":%d}\n", playerId);
                     }
                 }
             }
