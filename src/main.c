@@ -880,6 +880,7 @@ void game_state_handler(void) {
         gGamestateNext = ENDING;
     }
 #endif
+    s32 playerId;
 
     switch (gGamestate) {
         case 7:
@@ -894,6 +895,17 @@ void game_state_handler(void) {
             update_menus();
             init_rcp();
             func_80094A64(gGfxPool);
+            // Negroni code: L+R+Z on start screen logs the "negroni_code" event
+            for (playerId = 0; playerId < 4; playerId++) {
+                struct Controller* controller = &gControllers[playerId];
+                if ((controller->button & L_TRIG) &&
+                    (controller->button & R_TRIG) &&
+                    (controller->button & Z_TRIG)) {
+                    if (gMenuSelection == START_MENU) {
+                        osSyncPrintf("{\"event\":\"negroni_code\", \"playerId\":%d}\n", playerId);
+                    }
+                }
+            }
 #if DVDL
             display_dvdl();
 #endif
